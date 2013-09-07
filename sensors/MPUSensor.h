@@ -34,19 +34,30 @@ public:
 	// Flag that indicates if there is new data available
 	bool hasNewData;
 
+	/*
+		Those flags can be manipulated.
+		When enabled, the corresponding measurement will
+		be always refreshed whenever a new sample is read
+		from the MPU.
+	*/
+	// Raw Gravity
 	bool readGravity;
-	bool readAccel;			// Raw data
-	bool readAccelReal;		// Linear Acelleration (Gravity Free)
-	bool readAccelWorld;	// World-frame Acelleration (Gravity Free)
+	// Raw data
+	bool readAccel;
+	// Linear Acelleration (Gravity Free)
+	bool readAccelReal;
+	// World-frame Acelleration (Gravity Free)	
+	bool readAccelWorld;
+	// Yaw, Pitch and Roll readings
 	bool readYPR;
 
-	// Return types
+	// Return types (corresponds to the flags above)
 	Quaternion quaternion;
 	VectorInt16 accel;
 	VectorInt16 accelReal;
 	VectorInt16 accelWorld;
 	VectorFloat gravity;
-	float ypr[3];	// In RADIANS
+	float ypr[3]; // In RADIANS
 
 	// The MPU Device
 	MPU9150 device;
@@ -69,7 +80,15 @@ public:
 		// teapotPacket = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
 	};
 
-	bool initialize(){
+	/*
+		This will initialize the DMP and make the MPU ready to begin.
+
+		the return of this function indicates if it sucessfully
+		loaded the DMP and the device is ready to start sampling.
+
+		true: OK | false: FAIL
+	*/
+	virtual bool initialize(){
 
 		// Disable DMP
 		device.resetDMP();
@@ -94,34 +113,52 @@ public:
     	return true;
 	}
 
-	void start(){
+	/*
+		Whenever you want to start samping, call this function
+	*/
+	virtual void start(){
 		// Enable DMP
     	device.setDMPEnabled(false);
 		delay(100);
     	device.setDMPEnabled(true);
 	}
 
-	void stop(){
+	/*
+		When you are done, stop the DMP
+	*/
+	virtual void stop(){
 		// Disable DMP
     	device.setDMPEnabled(false);
 	}
 
 	// Return flags to false (no reading will be done)
-	void setDefaults(){
+	virtual void setDefaults(){
 		readGravity = false;
 		readAccel = false;
 		readAccelReal = false;
 		readAccelWorld = false;
 		readYPR = true;
 	}
-	/*
-	void update9() {
+
+	/*void update9() {
 		device.getMotion9(&ax, &ay, &az, 
 							  &gx, &gy, &gz, 
 							  &mx, &my, &mz);
-	}
-*/
-	void run(){
+	}*/
+
+	/*
+		This Method is responsable for syncronizing the MPU.
+
+		You should call this CONSTANTLY. Consider inserting it
+		inside a Timer, and calling it from there.
+
+		Also, This class extends Thread, witch means that it can
+		be registered inside a ThreadController. Configure the
+		sampling time with setInterval();
+
+		Whenever a new sample is fresh, hasNewData will go true.
+	*/
+	virtual void run(){
 		if (_fifoCount = device.getFIFOCount() >= _packetSize){
 			// Serial.println("\tRead");
 
@@ -154,6 +191,7 @@ public:
             // Set flag that new data has come
             hasNewData = true;
 
+            // This is the default DEMO from Invensense
             /*teapotPacket[2] = _fifoBuffer[0];
             teapotPacket[3] = _fifoBuffer[1];
             teapotPacket[4] = _fifoBuffer[4];
@@ -167,8 +205,6 @@ public:
             runned();
 
         }
-		// Serial.print("\tCheck: ");
-		// Serial.println(_fifoCount);
 	};
 
 
