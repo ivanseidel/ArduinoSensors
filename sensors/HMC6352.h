@@ -1,3 +1,14 @@
+/*
+ 	HMC6352.h - Honeywell HMC6352 Compass sensor library
+
+	For instructions, go to https://github.com/ivanseidel/Arduino-Sensors
+
+	Datasheet: https://www.sparkfun.com/datasheets/Components/HMC6352.pdf
+
+	Created by 	Ivan Seidel Gomes, June, 2013.
+	Released into the public domain.
+*/
+
 #ifndef HMC6352_h
 #define HMC6352_h
 
@@ -6,6 +17,7 @@
 #include <Thread.h>
 #include <AngleInterface.h>
 
+// Default I2C Address
 #define HMC6352_ADDR	(0x42 >> 1)
 
 
@@ -101,12 +113,19 @@ public:
 	// Buffer for internal usage
 	int8_t buffer[4];
 
+	/*
+		Sends a single byte command
+	*/
 	void sendCommand(int8_t command){
 		Wire.beginTransmission(address);
 		Wire.write(command);
 		Wire.endTransmission();		
 	}
 
+
+	/*
+		Reads a single byte after command
+	*/
 	int8_t readByte(int8_t command){
 		sendCommand(command);
 
@@ -128,7 +147,6 @@ public:
 
 		delayMicroseconds(70);
 	}
-
 	int8_t readEEPROM(int8_t eeAddress){
 		Wire.beginTransmission(address);
 		Wire.write(HMC6352_CMD_READ_EEPROM);
@@ -191,7 +209,6 @@ public:
 	int8_t getOperationModeRaw(){
 		return readEEPROM(HMC6352_EE_OPERATION_MODE_BYTE);
 	}
-
 	void setOperationModeRaw(int8_t val){
 		writeEEPROM(HMC6352_EE_OPERATION_MODE_BYTE, val);
 		delayMicroseconds(120);
@@ -218,7 +235,6 @@ public:
 				return -1;
 		}
 	}
-
 	void setSampleRate(int rate){
 		// Filter rate
 		int8_t finalRate = 0x00;
@@ -249,7 +265,6 @@ public:
 
 		return read;
 	}
-
 	void setOperationMode(int8_t setMode){
 		// Filter rate
 		int8_t finalMode = setMode & HMC6352_MODE_OPERATION_MSK;
@@ -265,14 +280,23 @@ public:
 		inContinuousMode = (getOperationMode() == HMC6352_MODE_CONTINUOUS_MODE);
 	}
 
+	/*
+		Set the default mode to be Continuous
+	*/
 	void setContinuousMode(){
 		setOperationMode(HMC6352_MODE_CONTINUOUS_MODE);
 	}
-
+	
+	/*
+		Set the default mode to be Standby
+	*/
 	void setStandbyMode(){
 		setOperationMode(HMC6352_MODE_STANDBY_MODE);
 	}
 
+	/*
+		Set the default mode to be Query
+	*/
 	void setQueryMode(){
 		setOperationMode(HMC6352_MODE_QUERY_MODE);
 	}
@@ -280,13 +304,11 @@ public:
 	/*
 		Periodic Set/Reset mode
 	*/
-
 	bool isAutoFixEnabled(){
 		int8_t mode = getOperationModeRaw();
 
 		return (mode & HMC6352_MODE_PERIODIC_SR_MSK);
 	}
-
 	void setAutoFixEnabled(bool enabled){
 		// Get Mode byte
 		int8_t mode = getOperationModeRaw();
@@ -297,35 +319,51 @@ public:
 	}
 
 	/*
-		Sleep, Wakeup, Save current mode
+		Enter sleep mode (standby)
 	*/
 	void sleep(){
 		sendCommand(HMC6352_CMD_ENTER_SLEEP_MODE);
 		delayMicroseconds(10);
 	}
 
+	/*
+		Wake up the device
+	*/
 	void wake(){
 		sendCommand(HMC6352_CMD_EXIT_SLEEP_MODE);
 		delayMicroseconds(100);
 	}
 
+	/*
+		Save the current mode as default (Sleep or Wake)
+	*/
 	void saveMode(){
 		sendCommand(HMC6352_CMD_SAVE_OP_MODE_TO_EEPROM);
 	}
 
 	/*
-		Calibration mode
+		Calibration mode.
+
+		Recommended time: 6 seconds up to 3 minutes.
+		Optimal: 2 rotations in 20 seconds.
+		(Remember to FINISH calibration)
 	*/
 	void startCalibration(){
 		sendCommand(HMC6352_CMD_ENTER_CALIBRATION_MODE);
 	}
-
 	void finishCalibration(){
 		sendCommand(HMC6352_CMD_EXIT_CALIBRATION_MODE);
 	}
 
-	void calibrate(long durationMs){
+	/*
+		Facilitate calibration.
+		call this method with the desired duration (in Ms)
+		and the Compass will enter and exit both states after
+		the desired duration.
+	*/
+	void calibrate(long durationMs = 20000){
 		startCalibration();
+
 		// We use Microseconds to allow calibration on Interruptions
 		delayMicroseconds(durationMs*1000);
 
@@ -355,6 +393,12 @@ public:
 
 		delayMicroseconds(300);
 	}
+
+	/*
+		========== SANDBOX ==========
+		In development:
+			Search devices reliably
+	*/
 
 	/*
 		This will return the same address of the local variable,
