@@ -163,7 +163,9 @@ public:
 
 public:
 	/*
-		Initialize the Compass
+		Instantiate the Compass with the desired address.
+		if initialize is set to false, then the Device will
+		only be instantiatet, and no communication will be done
 	*/
 	HMC6352(int address = HMC6352_ADDR, bool initialize = true){
 		angle = -10;
