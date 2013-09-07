@@ -14,7 +14,7 @@ class DistanceInterface
 {
 public:
 	// This is the minimum range of the sensor
-	double minVal
+	double minVal;
 	// This is the maximum range of the sensor
 	double maxVal;
 
