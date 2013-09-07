@@ -1,5 +1,5 @@
 /*
- 	AnalogIn.h - A class to object orient Analog pins
+ 	AnalogIn.h - A class to help with Analog Input pins.
 
 	https://github.com/ivanseidel/Arduino-Sensors
 

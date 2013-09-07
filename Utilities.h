@@ -1,6 +1,21 @@
+/*
+ 	Utilities.h - Repetitive code in pretty functions
+
+	For instructions, go to https://github.com/ivanseidel/Arduino-Sensors
+
+	Created by Ivan Seidel Gomes, June, 2013.
+	Released into the public domain.
+*/
+
 #ifndef Utilities_h
 #define Utilities_h
 
+/*
+	Simple conversion from float to String.
+
+	float f: the float to be converted
+	int decimals: number of decimal places
+*/
 String floatToString(float f, int decimals = 2){
 	/*
 		Transforms the floating point string process:
