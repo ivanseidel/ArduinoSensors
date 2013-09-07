@@ -26,10 +26,7 @@ public:
 	/*
 		Initialize 
 	*/
-	SharpMedium(int _pin){
-		// Calls constructor of AnalogIn
-		AnalogIn::AnalogIn(_pin);
-
+	SharpMedium(int _pin): AnalogIn(_pin){
 		distance = 0;
 
 		minVal = 6;

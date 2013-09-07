@@ -1,13 +1,22 @@
+/*
+ 	MPUSensor.h - Reliable Library that controlls both MPU9150 and MPU6050
+
+	For instructions, go to https://github.com/ivanseidel/Arduino-Sensors
+
+	Created by 	Ivan Seidel Gomes, June, 2013.
+	Released into the public domain.
+*/
+
 #ifndef IMU_h
 #define IMU_h
 
-#include "Arduino.h"
-#include "inttypes.h"
+#include <Arduino.h>
+#include <inttypes.h>
 
-#include "Wire.h"
-#include "I2Cdev.h"
-#include "dmpMPU9150.h"
-#include "Thread.h"
+#include <Wire.h>
+#include <I2Cdev.h>
+#include "sensors/MPU9150/dmpMPU9150.h"
+#include <Thread.h>
 
 class MPUSensor: public Thread{
 
@@ -87,11 +96,9 @@ public:
 
 	void start(){
 		// Enable DMP
-		Serial.println("starting");
     	device.setDMPEnabled(false);
 		delay(100);
     	device.setDMPEnabled(true);
-		Serial.println("started");
 	}
 
 	void stop(){

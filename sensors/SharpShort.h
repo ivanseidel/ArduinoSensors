@@ -26,10 +26,7 @@ public:
 	/*
 		Initialize 
 	*/
-	SharpShort(int _pin){
-		// Calls constructor of AnalogIn
-		AnalogIn::AnalogIn(_pin);
-
+	SharpShort(int _pin): AnalogIn(_pin){
 		distance = 0;
 
 		minVal = 7;
