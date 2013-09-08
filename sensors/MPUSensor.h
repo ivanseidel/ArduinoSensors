@@ -17,8 +17,9 @@
 #include <I2Cdev.h>
 #include "sensors/MPU/dmpMPU9150.h"
 #include <Thread.h>
+#include <AngleInterface.h>
 
-class MPUSensor: public Thread{
+class MPUSensor: public Thread, public AngleInterface{
 
 protected:
 	uint8_t _fifoBuffer[64];
@@ -207,6 +208,24 @@ public:
         }
 	};
 
+	/*
+		Returns the Yaw value of the MPU
+	*/
+	virtual float getAngle(){
+		// Default angle returned is Yaw
+		// TODO: Return selected angle
+		return ypr[0];
+	}
+
+	/*
+		"Tries" to read and return the fresh value of the MPU
+	*/
+	virtual float readValue(){
+		// Run self Thread and tries to update
+		run();
+
+		return getAngle();
+	}
 
 };
 
