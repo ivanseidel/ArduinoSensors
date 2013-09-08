@@ -1,5 +1,7 @@
 /*
- 	Utilities.h - Repetitive code in pretty functions
+ 	ArduinoSensors.h - Main ArduinoSensor file.
+
+ 	Provides repetitive code in pretty functions
 
  	Include this file in order to allow the compiler to discover the sub
  	folders and files of ArduinoSensors Library
@@ -10,8 +12,8 @@
 	Released into the public domain.
 */
 
-#ifndef Utilities_h
-#define Utilities_h
+#ifndef ArduinoSensors_h
+#define ArduinoSensors_h
 
 /*
 	Simple conversion from float to String.
