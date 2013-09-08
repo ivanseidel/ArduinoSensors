@@ -17,14 +17,22 @@
 class AnalogIn: public Thread
 {
 protected:
-	long 	value,	// Cached Last value
-			threshold;
+	// Cached value of the AnalogInput
+	long value;
 
+	// Threshold value
+	long threshold;
+
+	// Pin to read to
 	int inPin;
+
 public:
 
-	// Pin: Analog pin to read value
-	// lightPin: Pin connected to the LED
+	/*
+		Initialize the Input pin.
+
+		_inPin: Analog input pin to read value
+	*/
 	AnalogIn(int _inPin = -1){
 		setup(_inPin);
 
@@ -43,33 +51,61 @@ public:
 		threshold = 0;
 	}
 
+	/*
+		Use this operator to compare with boolean values.
+
+		This will return if the threshold is or not equeal to
+		the other boolean.
+
+		Eg.: (inputPin == HIGH)
+				is the same as
+			 (inputPin.aboveThreshold() == true)
+	*/
 	virtual bool operator==(bool other){
 		return aboveThreshold() == other;
 	}
 
-	// Called when this Thread is runned
+	/*
+		Called when this Thread is runned
+	*/
 	virtual void run(){
 		read();
 		runned();
 	}
 
+	/*
+		Reads the ADC and avarage it three times (reduce noise)
+		Saves localy and then returns it.
+	*/
 	virtual long read(){
 		value = (analogRead(inPin) + analogRead(inPin) + analogRead(inPin))/3;
-		return value;
+		return getValue();
 	}
 
+	/*
+		Only returns the value, it doesen't samples the ADC
+	*/
 	virtual long getValue(){
 		return value;
 	}
 
+	/*
+		Set a threshold for comparation
+	*/
 	virtual void setThreshold(long _threshold){
 		threshold = _threshold;
 	}
 
+	/*
+		Check if it's avove the selected threshold
+	*/
 	virtual bool aboveThreshold(){
 		return read() > threshold;
 	}
 
+	/*
+		Check if it's below the selected threshold
+	*/
 	virtual bool belowThreshold(){
 		return read() < threshold;
 	}
