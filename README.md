@@ -12,7 +12,7 @@ pleased to incorporate it to the library!
 ## Installation
 
 1. [Download](https://github.com/ivanseidel/Arduino-Sensors/releases) the Latest release from gitHub.
-2. Unzip and modify the Folder name to "DueTimer" (Remove the '-version')
+2. Unzip and modify the Folder name to "ArduinoSensors" (Remove the '-version')
 3. Paste the modified folder on your Library folder (On your `Libraries` folder inside Sketchbooks or Arduino software).
 4. Download and Install [ArduinoThread](https://github.com/ivanseidel/ArduinoThread)
 5. Restart the Arduino IDE
