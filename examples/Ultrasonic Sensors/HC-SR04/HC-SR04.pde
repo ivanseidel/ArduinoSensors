@@ -1,21 +1,23 @@
-#include "Ultrasonic.h"
-#include <LiquidCrystal.h>
-LiquidCrystal lcd(11, 10, 9, 4, 5, 6, 7);
-Ultrasonic ultrasonic(12,13);
+#include <ArduinoSensors.h>
+#include <sensors/PingUltrasonic.h>
+
+
+PingUltrasonic myUltrasonic(echoPin, triggerPin);
 
 void setup() {
-lcd.begin(16, 2);
-lcd.print("testing...");
+	Serial.begin(9600);
+	Serial.println("I'm alive!")
 }
 
 void loop()
 {
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print(ultrasonic.Ranging(CM));
-  lcd.print("cm");
-    
-  delay(100);
+	float distance = myUltrasonic.readDistance();
+
+	Serial.print("Distance: ");
+	Serial.print(distance);
+	Serial.println("cm");
+
+	delay(100);
 }
 
 
