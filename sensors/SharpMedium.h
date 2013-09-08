@@ -13,54 +13,31 @@
 #ifndef SharpMedium_h
 #define SharpMedium_h
 
-#include <AnalogIn.h>
-#include <DistanceInterface.h>
+#include <sensors/SharpInterface.h>
 
-class SharpMedium: public AnalogIn, public DistanceInterface
+class SharpMedium: public SharpInterface
 {
 protected:
-	// Cached Distance of the sensor
-	long distance;
+	/*
+		Convert the value
+	*/
+	virtual float convertDistance(float value){
+		// distance = 9019.84/(value + 20.36);
+		float converted = 6570.66/(value - 16.0);
+
+		// Filter lower and high values
+		converted = max(minVal, min(maxVal,converted));
+
+		return converted;
+	}
 
 public:
 	/*
 		Initialize 
 	*/
-	SharpMedium(int _pin): AnalogIn(_pin){
-		distance = 0;
-
+	SharpMedium(int _pin): SharpInterface(_pin){
 		minVal = 6;
 		maxVal = 45;
-	}
-
-	/*
-		Returns the CACHED distance
-	*/
-	long getDistance(){
-		return distance;
-	}
-
-	/*
-		Reads, CACHE and returns the cached value
-	*/
-	long readDistance(){
-		return read();
-	}
-
-	/*
-		Reads, CACHE and returns the cached value
-	*/
-	virtual long read(){
-		AnalogIn::read();
-
-		// Calculate distance
-		// distance = 9019.84/(value + 20.36);
-		distance = 6570.66/(value - 16.0);
-
-		// Filter lower and high values
-		distance = max(minVal, min(maxVal,distance));
-
-		return distance;
 	}
 
 };

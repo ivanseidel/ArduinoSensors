@@ -19,10 +19,10 @@ public:
 	double maxVal;
 
 	// Should return the CACHED value of the sensor
-	virtual long getDistance();
+	virtual float getDistance();
 
 	// Should READ and CACHE the value of the sensor
-	virtual long readDistance();
+	virtual float readDistance();
 };
 
 #endif

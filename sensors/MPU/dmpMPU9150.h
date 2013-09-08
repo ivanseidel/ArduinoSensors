@@ -39,7 +39,7 @@ THE SOFTWARE.
 // MotionApps 4.1 DMP implementation, built using the MPU-9150 "MotionFit" board
 #define MPU9150_INCLUDE_DMP9150
 
-#include "MPU9150.h"
+#include "sensors/MPU/MPU9150.h"
 
 #if defined(__AVR__)
     #include <avr/pgmspace.h>

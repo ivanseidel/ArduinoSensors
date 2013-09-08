@@ -38,7 +38,7 @@ THE SOFTWARE.
 #define _MPU9150_H_
 
 #include "I2Cdev.h"
-#include "helper_3dmath.h"
+#include "sensors/MPU/helper_3dmath.h"
 
 //Magnetometer Registers
 #define MPU9150_RA_MAG_ADDRESS		0x0C

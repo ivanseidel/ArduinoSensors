@@ -15,7 +15,7 @@
 
 #include <Wire.h>
 #include <I2Cdev.h>
-#include "sensors/MPU9150/dmpMPU9150.h"
+#include "sensors/MPU/dmpMPU9150.h"
 #include <Thread.h>
 
 class MPUSensor: public Thread{

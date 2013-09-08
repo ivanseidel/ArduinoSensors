@@ -39,7 +39,7 @@ THE SOFTWARE.
 // MotionApps 2.0 DMP implementation, built using the MPU-6050EVB evaluation board
 #define MPU9150_INCLUDE_DMP6050
 
-#include "MPU6050.h"
+#include "sensors/MPU/MPU6050.h"
 
 #if defined(__AVR__)
     #include <avr/pgmspace.h>

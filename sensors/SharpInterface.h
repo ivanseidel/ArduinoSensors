@@ -1,0 +1,62 @@
+/*
+ 	SharpInterface.h - Sharp Infrared Distance Sensor Interface
+
+	This class provides basic mathods for all Sharp Sensors.
+
+	For instructions, go to https://github.com/ivanseidel/Arduino-Sensors
+
+	Created by 	Ivan Seidel Gomes,
+				André Seidel Oliveira, June, 2013.
+	Released into the public domain.
+*/
+
+#ifndef SharpInterface_h
+#define SharpInterface_h
+
+#include <AnalogIn.h>
+#include <DistanceInterface.h>
+
+class SharpInterface: public DistanceInterface
+{
+protected:
+	// Cached Distance of the sensor
+	float distance;
+
+	// AnalogInput of the sensor
+	AnalogIn analogPin;
+
+	/*
+		This method is responsable for converting the
+		corresponding ADC value into CM value and returning
+	*/
+	virtual float convertDistance(float value);
+
+public:
+	/*
+		Initialize 
+	*/
+	SharpInterface(int _pin){
+		analogPin = AnalogIn(_pin);
+
+		distance = 0;
+	}
+
+	/*
+		Returns the CACHED distance
+	*/
+	virtual float getDistance(){
+		return distance;
+	}
+
+	/*
+		Reads, CACHE and returns the cached value
+	*/
+	virtual float readDistance(){
+		distance = convertDistance(analogPin.read());
+
+		return getDistance();
+	}
+
+};
+
+#endif

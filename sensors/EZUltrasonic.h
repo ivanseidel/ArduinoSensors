@@ -1,5 +1,12 @@
 /*
-	
+ 	HMC6352.h - Honeywell HMC6352 Compass sensor library
+
+	For instructions, go to https://github.com/ivanseidel/Arduino-Sensors
+
+	Datasheet: https://www.sparkfun.com/datasheets/Components/HMC6352.pdf
+
+	Created by 	Ivan Seidel Gomes, June, 2013.
+	Released into the public domain.
 */
 
 #ifndef EZUltrasonic_h
@@ -10,45 +17,46 @@
 
 #include <math.h>
 
-#define N_READS 6
-
-class EZUltrasonic : public AnalogIn, public DistanceInterface
+class EZUltrasonicAnalog: public DistanceInterface
 {
 protected:
-	long distance;
-	long lastDist[N_READS];
-	int curr;
-	
-public:
-	EZUltrasonic(int _pin){
-		setup(_pin);
 
-		distance = 0;
-		curr = 0;
+	// Cached value of the Distance
+	float distance;
+
+	/*
+		To prevent Interruptions from reading the distance while it's
+		being converted, we save it localy and then change the global
+	*/
+	float tmpDistance;
+	
+	AnalogIn analogPin;
+
+	void processValue(){
+		long adc = analogPin.read();
+
+		// Calculate real Centimiter value
+		tmpDistance = adc * 13.0 / 10;
+		
+		distance = tmpDistance;
 	}
 
-	long getDistance(){
+public:
+	EZUltrasonicAnalog(int _pin){
+		analogPin = AnalogIn(_pin);
+
+		distance = 0;
+	}
+
+	virtual float getDistance(){
 		return distance;
 	}
 
-	long readDistance(){
-		return read();
-	}
+	virtual float readDistance(){
+		// Read ADC and converts
+		processValue();
 
-	virtual long read(){
-		AnalogIn::read();
-
-		// Calculate real Centimiter value
-		distance = (long) value * 13L / 10L;
-		
-		lastDist[curr++] = distance;
-		curr %= N_READS;
-		
-		distance = 0;
-		for (int i = 0; i < N_READS; i++)
-			distance += lastDist[i];
-
-		return distance / N_READS;
+		return getDistance();
 	}
 
 };

@@ -13,54 +13,31 @@
 #ifndef SharpShort_h
 #define SharpShort_h
 
-#include <AnalogIn.h>
-#include <DistanceInterface.h>
+#include <sensors/SharpInterface.h>
 
-class SharpShort: public AnalogIn, public DistanceInterface
+class SharpShort: public SharpInterface
 {
 protected:
-	// Cached Distance of the sensor
-	long distance;
+	/*
+		Convert the value
+	*/
+	virtual float convertDistance(float value){
+		// distance = 11024.98 / (value +100.24) - 4.0;
+		float converted = 5489.72 / (value - 40.03);
+
+		// Filter lower and high values
+		converted = max(minVal, min(maxVal,converted));
+
+		return converted;
+	}
 
 public:
 	/*
 		Initialize 
 	*/
-	SharpShort(int _pin): AnalogIn(_pin){
-		distance = 0;
-
+	SharpShort(int _pin): SharpInterface(_pin){
 		minVal = 7;
 		maxVal = 30;
-	}
-
-	/*
-		Returns the CACHED distance
-	*/
-	virtual long getDistance(){
-		return distance;
-	}
-
-	/*
-		Reads, CACHE and returns the cached value
-	*/
-	virtual long readDistance(){
-		return read();
-	}
-
-	/*
-		Reads, CACHE and returns the cached value
-	*/
-	virtual long read(){
-		AnalogIn::read();
-
-		// Calculate distance
-		// distance = 11024.98 / (value +100.24) - 4.0;
-		distance = 5489.72 / (value - 40.03);
-
-		// Filter lower and high values
-		distance = max(minVal, min(maxVal,distance));
-
-		return distance;
 	}
 
 };

@@ -34,7 +34,7 @@ THE SOFTWARE.
 ===============================================
 */
 
-#include "MPU9150.h"
+#include "sensors/MPU/MPU9150.h"
 
 /** Default constructor, uses default I2C address.
  * @see MPU9150_DEFAULT_ADDRESS
