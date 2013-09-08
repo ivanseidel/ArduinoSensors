@@ -14,7 +14,7 @@
 #define SharpInterface_h
 
 #include <AnalogIn.h>
-#include <DistanceInterface.h>
+#include <interfaces/DistanceInterface.h>
 
 class SharpInterface: public DistanceInterface
 {

@@ -15,7 +15,7 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <Thread.h>
-#include <AngleInterface.h>
+#include <interfaces/AngleInterface.h>
 
 // Default I2C Address
 #define HMC6352_ADDR	(0x42 >> 1)

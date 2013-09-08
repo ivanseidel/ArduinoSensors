@@ -17,7 +17,7 @@
 #include <I2Cdev.h>
 #include "sensors/MPU/dmpMPU9150.h"
 #include <Thread.h>
-#include <AngleInterface.h>
+#include <interfaces/AngleInterface.h>
 
 class MPUSensor: public Thread, public AngleInterface{
 

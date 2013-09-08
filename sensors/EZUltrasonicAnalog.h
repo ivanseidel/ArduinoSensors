@@ -13,7 +13,7 @@
 #define EZUltrasonic_h
 
 #include <AnalogIn.h>
-#include <DistanceInterface.h>
+#include <interfaces/DistanceInterface.h>
 
 #include <math.h>
 

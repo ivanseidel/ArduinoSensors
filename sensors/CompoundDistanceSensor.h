@@ -13,7 +13,7 @@
 #define CompoundDistanceSensor_h
 
 #include <Thread.h>
-#include <DistanceInterface.h>
+#include <interfaces/DistanceInterface.h>
 
 class CompoundDistanceSensor: public Thread, public DistanceInterface
 {
