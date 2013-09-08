@@ -188,7 +188,8 @@ public:
 		if(newAdr !=  0x00)
 			sleep();
 		
-		delay(50);
+		// DelayMicroseconds can be used within Interruptions
+		delayMicroseconds(50000);
 
 		if(newAdr !=  0x00)
 			wake();
@@ -215,7 +216,7 @@ public:
 	*/
 	void wake(){
 		digitalWrite(SDA, LOW);
-		delay(36);
+		delayMicroseconds(36000);
 		digitalWrite(SDA, HIGH);
 	}
 
