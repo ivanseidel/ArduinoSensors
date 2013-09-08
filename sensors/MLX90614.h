@@ -12,6 +12,7 @@
 
 #include <Arduino.h>
 
+#include <Thread.h>
 #include <interfaces/TemperatureInterface.h>
 
 #include <inttypes.h>
@@ -55,7 +56,7 @@ const unsigned char crc_table[] = {
 	0xFA,0xFD,0xF4,0xF3
 };
 
-class MLX90614: public TemperatureInterface{
+class MLX90614: public Thread, public TemperatureInterface{
 protected:
 	/*
 		This method is used when changing the address of the MLX90614
@@ -63,10 +64,12 @@ protected:
 	static char CRC8(unsigned char buffer[], unsigned int len){
 		unsigned char m_crc = 0;
 		int m_byte_count = 0;
+
 		for(int i = 0; i < len; i++) {
 			m_byte_count++;
 			m_crc = crc_table[ m_crc ^ buffer[i] ];
 		}
+
 		return m_crc;
 	}
 
@@ -80,64 +83,32 @@ protected:
 	*/
 	float temperature;
 
+	// Flag that indicates if the bus is initialized
+	static bool busInitialized;
+
 public:
-	/*
-		Initialize I2C bus and enable pull-ups
-	*/
-	void init(){
-	  	// Wire.begin();
-		i2c_init(); //Initialise the i2c bus
-		PORTC = (1 << PORTC4) | (1 << PORTC5);//enable pullups
-	}
-
-	/*
-		This method will return the first connected and working device
-		address between 'start' and 'end'
-	*/
-	static int scan(int start = 0, int end = 127){
-		bool find;
-		int i;
-
-		for(i = start; i <= end; i++){
-			find = i2c_start_wait(i<<1 | I2C_WRITE);
-			i2c_stop();
-			if(find)
-				return i;
-			TWCR = 0;
-		}
-		return -1;
-	}
-
-	/*
-		This method will return a list of connected MLX90614 addresses
-		connected and working, between 'start' and 'end', with a limit
-		of 'maxSize' devices found. All devices will be stored in the 
-		'addresses' buffer (IT SHOULD STORE AT LEAST 'maxSize' int elements).
-
-		The total number of devices found will be returned.
-	*/
-	static int scanAll(int start, int end, int maxSize, int* addresses){
-		int total;
-		int s;
-		total = 0;
-		for(int x = start; x < end && total < maxSize; x++){
-			s = scan(x);
-			if(s==-1){
-				break;
-			}else{
-				addresses[total] = s;
-				x = s;
-				total++;
-			}
-		}
-		return total;
-	}
-
 	/*
 		Construct the MLX90614 object with the given address
 	*/
 	MLX90614(int _adr){
 		setAddress(_adr);
+
+		if(!MLX90614::busInitialized){
+			MLX90614::init();
+			MLX90614::busInitialized = true;
+		}
+
+		Thread::Thread();
+		setInterval(20);
+	}
+
+	/*
+		Initialize I2C bus and enable pull-ups
+	*/
+	static void init(){
+	  	// Wire.begin();
+		i2c_init(); //Initialise the i2c bus
+		PORTC = (1 << PORTC4) | (1 << PORTC5);//enable pullups
 	}
 
 	/*
@@ -158,61 +129,12 @@ public:
 	}
 
 	/*
-		Change the address of the MLX90614 over the I2C.
-
-		Procedure:
-			1.: Remove ALL devices from the BUS and let only the
-				desired MLX90614 to change address
-
-			2.: Write a code that calls changeAddress(addr)
-				once and stops.
-
-			3.: Power off and on the MLX90614.
-
-			4.: Done. Have fun!
-	*/
-	bool changeAddress(int newAdr){
-	    // Erase Address memory FIRST
-	    if(newAdr !=  0x00)
-			changeAddress(0x00);
-		
-	    // Prepare 3 byte message
-		byte msg[4] = {MLX90614_ADR_SET_ADDRESS, newAdr, 0x00,0x00};
-		msg[3] = CRC8(msg, 3);
-
-		if(!i2c_start_wait(0 + I2C_WRITE))
-			return false;
-
-		i2c_write(msg[0]);
-		i2c_write(msg[1]);
-		i2c_write(msg[2]);
-		
-		if(i2c_write(msg[3])){
-			i2c_stop();
-		}else{
-			i2c_stop();
-			return false;
-		}
-
-		if(newAdr !=  0x00)
-			sleep();
-		
-		// DelayMicroseconds can be used within Interruptions
-		delayMicroseconds(50000);
-
-		if(newAdr !=  0x00)
-			wake();
-
-	    adr = newAdr;
-
-		return true;
-	}
-
-	/*
 		Put the desired device to sleep
 	*/
 	bool sleep(){
-		if(!i2c_start_wait(adr<<1 + I2C_WRITE)) return false;
+		if(!i2c_start_wait(adr<<1 + I2C_WRITE))
+			return false;
+
 		i2c_write(0xFF);
 		i2c_write(0xE8);
 		i2c_stop();
@@ -290,6 +212,114 @@ public:
 	virtual float getTemperature(){
 		return temperature;
 	}
+
+	/*
+		Thread callback
+	*/
+	virtual void run(){
+		readTemperature();
+		
+		runned();
+	}
+
+	/*
+		Change the address of the MLX90614 over the I2C.
+
+		Procedure:
+			1.: Remove ALL devices from the BUS and let only the
+				desired MLX90614 to change address
+
+			2.: Write a code that calls changeAddress(addr)
+				once and stops.
+
+			3.: Power off and on the MLX90614.
+
+			4.: Done. Have fun!
+	*/
+	bool changeAddress(int newAdr){
+	    // Erase Address memory FIRST
+	    if(newAdr !=  0x00)
+			changeAddress(0x00);
+		
+	    // Prepare 3 byte message
+		byte msg[4] = {MLX90614_ADR_SET_ADDRESS, newAdr, 0x00,0x00};
+		msg[3] = CRC8(msg, 3);
+
+		if(!i2c_start_wait(0 + I2C_WRITE))
+			return false;
+
+		i2c_write(msg[0]);
+		i2c_write(msg[1]);
+		i2c_write(msg[2]);
+		
+		if(i2c_write(msg[3])){
+			i2c_stop();
+		}else{
+			i2c_stop();
+			return false;
+		}
+
+		if(newAdr !=  0x00)
+			sleep();
+		
+		// DelayMicroseconds can be used within Interruptions
+		delayMicroseconds(50000);
+
+		if(newAdr !=  0x00)
+			wake();
+
+	    adr = newAdr;
+
+		return true;
+	}
+
+	/*
+		This method will return the first connected and working device
+		address between 'start' and 'end'
+	*/
+	static int scan(int start = 0, int end = 127){
+		bool find;
+		int i;
+
+		for(i = start; i <= end; i++){
+			find = i2c_start_wait(i<<1 | I2C_WRITE);
+			i2c_stop();
+
+			if(find)
+				return i;
+
+			TWCR = 0;
+		}
+		return -1;
+	}
+
+	/*
+		This method will return a list of connected MLX90614 addresses
+		connected and working, between 'start' and 'end', with a limit
+		of 'maxSize' devices found. All devices will be stored in the 
+		'addresses' buffer (IT SHOULD STORE AT LEAST 'maxSize' int elements).
+
+		The total number of devices found will be returned.
+	*/
+	static int scanAll(int start, int end, int maxSize, int* addresses){
+		int total;
+		int s;
+		total = 0;
+		for(int x = start; x < end && total < maxSize; x++){
+			s = scan(x);
+			if(s==-1){
+				break;
+			}else{
+				addresses[total] = s;
+				x = s;
+				total++;
+			}
+		}
+		return total;
+	}
 };
+
+// Static atributes initialization
+bool MLX90614::busInitialized = false;
 
 #endif

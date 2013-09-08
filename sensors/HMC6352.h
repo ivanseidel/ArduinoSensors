@@ -206,6 +206,15 @@ public:
 	}
 
 	/*
+		Thread callback
+	*/
+	virtual void run(){
+		readAngle();
+		
+		runned();
+	}
+
+	/*
 		Get and Set current Mode Byte (RAW)
 	*/
 	int8_t getOperationModeRaw(){

@@ -2,7 +2,7 @@
  	Utilities.h - Repetitive code in pretty functions
 
  	Include this file in order to allow the compiler to discover the sub
- 	folders of ArduinoSensors.
+ 	folders and files of ArduinoSensors Library
 
 	For instructions, go to https://github.com/ivanseidel/Arduino-Sensors
 
