@@ -12,8 +12,11 @@
 	Released into the public domain.
 */
 
+
 #ifndef ArduinoSensors_h
 #define ArduinoSensors_h
+
+#include <Arduino.h>
 
 /*
 	Simple conversion from float to String.

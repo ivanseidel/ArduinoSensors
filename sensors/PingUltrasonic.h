@@ -20,9 +20,11 @@
 #define Ultrasonic_h
 
 #include <Arduino.h>
-#include 
 
-class Ultrasonic: public Thread, public DistanceInterface
+#include <Thread.h>
+#include <interfaces/DistanceInterface.h>
+
+class PingUltrasonic: public Thread, public DistanceInterface
 {
 private:
 	int trigPin;
@@ -32,7 +34,7 @@ private:
 	float distance;
 
 public:
-	Ultrasonic(int _trigPin, int _echoPin = -1){
+	PingUltrasonic(int _trigPin, int _echoPin = -1){
 		trigPin = _trigPin;
 
 		/*
@@ -74,7 +76,7 @@ public:
 		pinMode(echoPin, INPUT);
 
 		// Reads the pulse
-		bool exited = false
+		bool exited = false;
 		long startTime = micros();
 
 		// Waits it to get HIGH
@@ -118,5 +120,7 @@ public:
 	}
 
 };
+
+extern PingUltrasonic Ultrasonic;
 
 #endif
