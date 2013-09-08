@@ -14,10 +14,9 @@
 #define SharpInterface_h
 
 #include <AnalogIn.h>
-#include <Thread.h>
 #include <interfaces/DistanceInterface.h>
 
-class SharpInterface: public Thread, public DistanceInterface
+class SharpInterface: public DistanceInterface
 {
 protected:
 	// Cached Distance of the sensor
@@ -40,9 +39,6 @@ public:
 		analogPin = AnalogIn(_pin);
 
 		distance = 0;
-
-		Thread::Thread();
-		setInterval(20);
 	}
 
 	/*
@@ -59,15 +55,6 @@ public:
 		distance = convertDistance(analogPin.read());
 
 		return getDistance();
-	}
-
-	/*
-		Thread callback
-	*/
-	virtual void run(){
-		readDistance();
-		
-		runned();
 	}
 
 };
