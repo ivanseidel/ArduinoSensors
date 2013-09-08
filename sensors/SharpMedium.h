@@ -26,7 +26,7 @@ protected:
 		float converted = 6570.66/(value - 16.0);
 
 		// Filter lower and high values
-		converted = max(minVal, min(maxVal,converted));
+		converted = max(minDistance, min(maxDistance,converted));
 
 		return converted;
 	}
@@ -36,8 +36,8 @@ public:
 		Initialize 
 	*/
 	SharpMedium(int _pin): SharpInterface(_pin){
-		minVal = 6;
-		maxVal = 45;
+		minDistance = 6;
+		maxDistance = 45;
 	}
 
 };

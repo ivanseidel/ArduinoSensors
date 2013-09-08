@@ -14,9 +14,9 @@ class DistanceInterface
 {
 public:
 	// This is the minimum range of the sensor
-	float minVal;
+	float minDistance;
 	// This is the maximum range of the sensor
-	float maxVal;
+	float maxDistance;
 
 	// Should return the CACHED value of the sensor
 	virtual float getDistance();

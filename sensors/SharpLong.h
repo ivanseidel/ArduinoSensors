@@ -30,9 +30,9 @@ protected:
 			converted = 17985.61 / (value - 30.18);
 
 		if(converted <= 0)
-			converted = maxVal;
+			converted = maxDistance;
 		
-		converted = max(minVal, min(maxVal,converted));
+		converted = max(minDistance, min(maxDistance,converted));
 
 		return converted;
 	}
@@ -42,8 +42,8 @@ public:
 		Initialize 
 	*/
 	SharpLong(int _pin): SharpInterface(_pin){
-		minVal = 30;
-		maxVal = 90;
+		minDistance = 30;
+		maxDistance = 90;
 	}
 
 };

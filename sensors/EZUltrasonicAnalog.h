@@ -46,6 +46,9 @@ public:
 		analogPin = AnalogIn(_pin);
 
 		distance = 0;
+
+		minDistance = 10;
+		maxDistance = 300;
 	}
 
 	/*

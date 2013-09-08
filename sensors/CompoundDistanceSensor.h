@@ -31,19 +31,33 @@ public:
 	// lightPin: Pin connected to the LED
 	CompoundDistanceSensor(DistanceInterface *_dist1, DistanceInterface *_dist2){
 		onCalculate = 0;
-		dist1 = _dist1;
-		dist2 = _dist2;
+
+		// Always set dist1 to have the lowest minimum range
+		if(_dist1->minDistance < _dist2->minDistance){
+			dist1 = _dist1;
+			dist2 = _dist2;
+		}else{
+			dist1 = _dist2;
+			dist2 = _dist1;
+		}
+
 
 		minVal = min(dist1->maxVal, dist2->minVal);
 		maxVal = max(dist1->maxVal, dist2->maxVal);
 	}
 
-	// Called when this Thread is runned
-	virtual void run(){
-		readDistance();
-		runned();
+	/*
+		This method will return the cached value of the calculated distance
+	*/
+	virtual float getDistance(){
+		return value;
 	}
 
+	/*
+		This method will read both distances, and send it to
+		the callback function 'calculate'. The result will be
+		saved and returned
+	*/
 	virtual float readDistance(){
 		if(!dist1 || !dist2)
 			return -1;
@@ -54,18 +68,30 @@ public:
 
 		value = calculate(val1, val2);
 
-		return value;
+		return getDistance();
 	}
 
 	virtual float calculate(float val1, float val2){
-		if(onCalculate)
+		if(onCalculate){
 			value = onCalculate(val1, val2);
+		}else{
+			// default implementation, if callback not set
+			if(val1 >= dist1->maxDistance)
+				value = val2;
+			else
+				value = val1;
+		}
 
 		return value;
 	}
 
-	virtual float getDistance(){
-		return value;
+	/*
+		Thread implementation
+	*/
+	virtual void run(){
+		readDistance();
+
+		runned();
 	}
 
 };
