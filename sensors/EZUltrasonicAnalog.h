@@ -48,10 +48,16 @@ public:
 		distance = 0;
 	}
 
+	/*
+		Returns the cached distance
+	*/ 
 	virtual float getDistance(){
 		return distance;
 	}
 
+	/*
+		Sample ADC, converts to CM and returns cached distance
+	*/
 	virtual float readDistance(){
 		// Read ADC and converts
 		processValue();

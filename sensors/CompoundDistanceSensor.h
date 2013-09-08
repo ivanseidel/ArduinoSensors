@@ -1,7 +1,14 @@
 /*
-	
-*/
+ 	CompoundDistanceSensor.h - Integrate two Distance Sensor in a single sensor
 
+	This Class helps to integrate two sensors that measure distance with diferent
+	ranges in a single one, that provides a unique distance.
+
+	For instructions, go to https://github.com/ivanseidel/Arduino-Sensors
+
+	Created by 	Ivan Seidel Gomes, June, 2013.
+	Released into the public domain.
+*/
 #ifndef CompoundDistanceSensor_h
 #define CompoundDistanceSensor_h
 
@@ -11,7 +18,8 @@
 class CompoundDistanceSensor: public Thread, public DistanceInterface
 {
 protected:
-	long 	value;	// Cached Last value;
+	// Cached Last value;
+	long value;
 
 	DistanceInterface *dist1, *dist2;
 
@@ -36,11 +44,11 @@ public:
 		runned();
 	}
 
-	virtual long readDistance(){
+	virtual float readDistance(){
 		if(!dist1 || !dist2)
 			return -1;
 
-		long val1, val2;
+		float val1, val2;
 		val1 = dist1->readDistance();
 		val2 = dist2->readDistance();
 
@@ -49,14 +57,14 @@ public:
 		return value;
 	}
 
-	virtual long calculate(long val1, long val2){
+	virtual float calculate(float val1, float val2){
 		if(onCalculate)
 			value = onCalculate(val1, val2);
 
 		return value;
 	}
 
-	virtual long getDistance(){
+	virtual float getDistance(){
 		return value;
 	}
 
