@@ -1,3 +1,12 @@
+/*
+ 	MLX90614.h - Reliable Library that controlls MLX90614 Temperature sensors
+
+	For instructions, go to https://github.com/ivanseidel/Arduino-Sensors
+
+	Created by 	Ivan Seidel Gomes, June, 2013.
+	Released into the public domain.
+*/
+
 #ifndef MLX90614_h
 #define MLX90614_h
 

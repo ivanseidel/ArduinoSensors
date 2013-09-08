@@ -1,6 +1,9 @@
 /*
  	Utilities.h - Repetitive code in pretty functions
 
+ 	Include this file in order to allow the compiler to discover the sub
+ 	folders of ArduinoSensors.
+
 	For instructions, go to https://github.com/ivanseidel/Arduino-Sensors
 
 	Created by Ivan Seidel Gomes, June, 2013.
