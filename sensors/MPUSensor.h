@@ -14,7 +14,7 @@
 #include <inttypes.h>
 
 #include <Wire.h>
-#include <I2Cdev.h>
+#include "I2Cdev.h"
 #include "sensors/MPU/dmpMPU9150.h"
 #include <Thread.h>
 #include <interfaces/AngleInterface.h>

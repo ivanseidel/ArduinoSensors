@@ -2996,7 +2996,7 @@ bool MPU9150::writeMemoryBlock(const uint8_t *data, uint16_t dataSize, uint8_t b
         
         if (false) {
             // write the chunk of data as specified
-            Serial.println("FUUUUUUUUUUUUUUUUUUU");
+            // Serial.println("FUUUUUUUUUUUUUUUUUUU");
             // for (j = 0; j < chunkSize; j++) progBuffer[j] = pgm_read_byte(data + i + j);
         } else {
             // write the chunk of data as specified
@@ -3066,7 +3066,7 @@ bool MPU9150::writeDMPConfigurationSet(const uint8_t *data, uint16_t dataSize, b
     uint8_t bank, offset, length;
     for (i = 0; i < dataSize;) {
         if (false) {
-            Serial.println("FUUUUUUUUUUUUUUUUUUU");
+            // Serial.println("FUUUUUUUUUUUUUUUUUUU");
             /*bank = pgm_read_byte(data + i++);
             offset = pgm_read_byte(data + i++);
             length = pgm_read_byte(data + i++);*/
@@ -3086,7 +3086,7 @@ bool MPU9150::writeDMPConfigurationSet(const uint8_t *data, uint16_t dataSize, b
             Serial.print(", length=");
             Serial.println(length);*/
             if (false) {
-                Serial.println("FUUUUUUUUUUUUUUUUUUU");
+                // Serial.println("FUUUUUUUUUUUUUUUUUUU");
                 /*if (sizeof(progBuffer) < length) progBuffer = (uint8_t *)realloc(progBuffer, length);
                 for (j = 0; j < length; j++) progBuffer[j] = pgm_read_byte(data + i + j);*/
             } else {
@@ -3101,7 +3101,7 @@ bool MPU9150::writeDMPConfigurationSet(const uint8_t *data, uint16_t dataSize, b
             // behavior only, and exactly why (or even whether) it has to be here
             // is anybody's guess for now.
             if (false) {
-                Serial.println("FUUUUUUUUUUUUUUUUUUU");
+                // Serial.println("FUUUUUUUUUUUUUUUUUUU");
                 // special = pgm_read_byte(data + i++);
             } else {
                 special = data[i++];
