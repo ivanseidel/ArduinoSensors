@@ -48,10 +48,11 @@ protected:
 	static float defaultAnalogReference;
 
 	/*
-
+		Convertas an AD value to voltage, based on the maxVoltage 
+		and minVoltage values
 	*/
 	virtual float convert(long ADValue){
-		float percentage = ((float) ADValue / cachedMaxValue);
+		float percentage = (((float) ADValue) / cachedMaxValue);
 
 		return (maxVoltage - minVoltage) * percentage + minVoltage;
 	}
@@ -89,7 +90,7 @@ public:
 		So: ADC = 0				-> outputs minVoltage (v1);
 			ADC = MAX_ADC_VALUE	-> outputs maxVoltage (v2);
 	*/
-	AnalogVoltage(int _inPin, float v1 = -9999, float v2 = -9999): AnalogIn(_inPin){
+	AnalogVoltage(int _inPin = -1, float v1 = -9999, float v2 = -9999): AnalogIn(_inPin){
 		voltage = 0;
 
 		if(v1 == NO_VOLTAGE && v2 == NO_VOLTAGE){
