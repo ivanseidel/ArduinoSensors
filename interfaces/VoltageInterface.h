@@ -14,9 +14,9 @@ class VoltageInterface
 {
 public:
 	// This is the minimum range of the sensor
-	float minVal;
+	float minVoltage;
 	// This is the maximum range of the sensor
-	float maxVal;
+	float maxVoltage;
 
 	// Should return the CACHED value of the sensor
 	virtual float getVoltage();

@@ -107,4 +107,61 @@ float fixRads(float angle){
 	return angle;
 };
 
+/*
+	This preprocessor logic will determine the default
+	AREF voltage for the current Arduino being compiled
+*/
+#if defined(__AVR__)
+	
+	/*
+		AVR family usualy is 3.3v when running on 8Mhz,
+		and 5.0 if running on 16Mhz
+	*/	
+	#if 	F_CPU <= 8000000
+		#warning "ADC_DEFAULT_AREF = 3.3v | AVR <=8Mhz clock"
+		#define ADC_DEFAULT_AREF	3.3
+	#elif 	F_CPU <= 16000000
+		#warning "ADC_DEFAULT_AREF = 5.0v | AVR >8Mhz & <=16Mhz clock"
+		#define ADC_DEFAULT_AREF	5.0
+	#else
+		#warning "ADC_DEFAULT_AREF = 5.0v | AVR Default AREF"
+		#define ADC_DEFAULT_AREF	5.0
+	#endif
+
+#elif defined(__PIC32MX__)
+
+	/*
+		Currently, all Arduinos with PIC32 are 3.3v
+	*/
+	#pragma message("ADC_DEFAULT_AREF = 3.3v | PIC32 Archtecture")
+	#define ADC_DEFAULT_AREF		3.3
+
+#elif defined(__arm__)
+
+	/*
+		Currently, all Arduinos with ARM are 3.3v
+	*/
+	#pragma message("ADC_DEFAULT_AREF = 3.3v | ARM Archtecture")
+	#define ADC_DEFAULT_AREF		3.3	
+
+#endif
+
+#ifndef ADC_DEFAULT_AREF
+	#warning "ADC_DEFAULT_AREF = 5.0v | Default value"
+	#define ADC_DEFAULT_AREF		5.0
+#endif
+
+/*
+	With tests, I could notice an average voltage output
+	from the regulator of (VCC * (1 - 0.03)) as the output.
+
+	An average of 3% drop is the normal.
+
+	So we define that to fix some small erros.
+
+	NOTE: This feature is disabled by default.
+*/
+// #define ADC_VOLTAGE_PROP	0.03
+#define ADC_VOLTAGE_PROP	0.00
+
 #endif
