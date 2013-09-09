@@ -33,6 +33,38 @@ private:
 	long duration;
 	float distance;
 
+	void sendCommand(){
+		// Set pin as output
+		if(trigPin == echoPin)
+			pinMode(trigPin, OUTPUT);
+
+		// Make shure it's LOW (Erase state)
+		digitalWrite(trigPin, LOW);
+		delayMicroseconds(2);
+
+		// Send pulse
+		digitalWrite(trigPin, HIGH);
+		delayMicroseconds(10);
+		digitalWrite(trigPin, LOW);
+
+		// Set pin as input
+		if(trigPin == echoPin)
+			pinMode(echoPin, INPUT);
+	}
+
+	bool waitResponse(){
+		long startTime = micros();
+
+		// Waits it to get HIGH
+		while(digitalRead(echoPin) == LOW){
+			if(micros() - startTime > 1000){
+				return false;
+				break;
+			}
+		}
+		return true;
+	}
+
 public:
 	PingUltrasonic(int _trigPin, int _echoPin = -1){
 		trigPin = _trigPin;
@@ -60,54 +92,54 @@ public:
 	}
 
 	virtual float readDistance(){
-		// Set pin as output
-		pinMode(trigPin, OUTPUT);
+		// Send pulse to trigger reading action
+		sendCommand();
 
-		// Make shure it's LOW (Erase state)
-		digitalWrite(trigPin, LOW);
-		delayMicroseconds(2);
-
-		// Send pulse
-		digitalWrite(trigPin, HIGH);
-		delayMicroseconds(10);
-		digitalWrite(trigPin, LOW);
-
-		// Set pin as input
-		pinMode(echoPin, INPUT);
-
-		// Reads the pulse
-		bool exited = false;
+		/*
+			After reading, if this flag is true, indicates either:
+				* Sensor is not connected (echo is not responding)
+				* Timeout on reading pulse
+		*/
+		bool error = false;
+		
+		// Start time to compare later
 		long startTime = micros();
 
-		// Waits it to get HIGH
-		while(digitalRead(echoPin) == LOW){
-			if(micros() - startTime > 100){
-				exited = true;
-				break;
+		// Waits for the pulse, and check if returned true
+		if(waitResponse()){
+		
+			// Reads HIGH pulse time
+			while(digitalRead(echoPin) == HIGH){
+				if(micros() - startTime > 50000){
+					error = true;
+					// Serial.println("FAIL2!");
+					// Serial.print("FAIL2!\t");
+					break;
+				}
 			}
-		}
 
-		// Reset timer
-		startTime = micros();
-
-		// Reads HIGH pulse time
-		while(digitalRead(echoPin) == HIGH){
-			if(micros() - startTime > 50000){
-				exited = true;
-				break;
-			}
+		}else{
+			error = true;
 		}
 
 		// Calculates duration
 		duration = micros() - startTime;
 
 		// If error, then doesen't update value
-		if(!exited)
+		if(!error)
 			distance = duration / 29.0 / 2;
 		else
 			distance = maxDistance;
 
 		return getDistance();
+	}
+
+	/*
+		Check if the sensor is connected
+	*/
+	virtual bool isConnected(){
+		sendCommand();
+		return waitResponse();
 	}
 
 	/*
