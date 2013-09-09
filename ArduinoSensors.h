@@ -108,6 +108,21 @@ float fixRads(float angle){
 };
 
 /*
+	Converts from inches to centimeters
+*/
+inline float toCentimeters(float inches){
+	return inches * 0.393700787;
+}
+
+/*
+	Converts from centimeters to inches
+*/
+inline float toInches(float centimeters){
+	return centimeters * 2.54;
+}
+
+
+/*
 	This preprocessor logic will determine the default
 	AREF voltage for the current Arduino being compiled
 */
