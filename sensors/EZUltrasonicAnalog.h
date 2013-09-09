@@ -12,12 +12,35 @@
 #ifndef EZUltrasonic_h
 #define EZUltrasonic_h
 
-#include <AnalogIn.h>
+#include <Thread.h>
+#include <Arduino.h>
+
+#include <ArduinoSensors.h>
+#include <sensors/AnalogVoltage.h>
 #include <interfaces/DistanceInterface.h>
 
 #include <math.h>
 
-class EZUltrasonicAnalog: public DistanceInterface
+/*
+	Those definitios are used to know the correct
+	proportional to the VCC value, per cm
+*/
+#define VCC					1.0
+
+#define LV_EZ0				toCentimeters(VCC/512)
+#define LV_EZ1				toCentimeters(VCC/512)
+#define LV_EZ2				toCentimeters(VCC/512)
+#define LV_EZ3				toCentimeters(VCC/512)
+#define LV_EZ4				toCentimeters(VCC/512)
+
+#define XL_EZ0				VCC/1024
+#define XL_EZ1				VCC/1024
+#define XL_EZ2				VCC/1024
+#define XL_EZ3				VCC/1024
+#define XL_EZ4				VCC/1024
+#define XL_EZL0				VCC/1024
+
+class EZUltrasonicAnalog: public Thread, public DistanceInterface
 {
 protected:
 
@@ -30,25 +53,32 @@ protected:
 	*/
 	float tmpDistance;
 	
-	AnalogIn analogPin;
+	// Object that reads from Analog pin
+	AnalogVoltage analogPin;
 
-	void processValue(){
-		long adc = analogPin.read();
+	// Factor to scale distance
+	float scaleFactor;
 
+	float convert(float voltage){
+		Serial.println(voltage);
 		// Calculate real Centimiter value
-		tmpDistance = adc * 13.0 / 10;
-		
-		distance = tmpDistance;
+		return tmpDistance = (voltage / 512) * (scaleFactor * analogPin.maxVoltage);
 	}
 
 public:
-	EZUltrasonicAnalog(int _pin){
-		analogPin = AnalogIn(_pin);
+	EZUltrasonicAnalog(int _pin, float _scaleFactor = LV_EZ0){
+		analogPin = AnalogVoltage(_pin);
 
 		distance = 0;
 
+		// TODO: Modify range acordingly to the device selected
 		minDistance = 10;
-		maxDistance = 300;
+		maxDistance = 500;
+
+		scaleFactor = _scaleFactor;
+
+		Thread::Thread();
+		setInterval(20);
 	}
 
 	/*
@@ -63,9 +93,18 @@ public:
 	*/
 	virtual float readDistance(){
 		// Read ADC and converts
-		processValue();
+		distance = convert(analogPin.readVoltage());
 
 		return getDistance();
+	}
+
+	/*
+		Thread callback
+	*/
+	virtual void run(){
+		readDistance();
+
+		runned();
 	}
 
 };
