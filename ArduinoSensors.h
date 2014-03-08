@@ -81,11 +81,10 @@ float toDegs(double angle){
 
 */
 float fixDegrees(float angle){
-	float x;
 	while (angle < -180.0)
 		angle += 360.0;
 
-	while (x > 180.0)
+	while (angle > 180.0)
 		angle -= 360.0;
 
 	return angle;
@@ -97,11 +96,10 @@ float fixDegrees(float angle){
 	(PI = 180; -PI = -180; 2*PI = 360)
 */
 float fixRads(float angle){
-	float x;
 	while (angle < - M_PI)
 		angle += 2*M_PI;
 
-	while (x > M_PI)
+	while (angle > M_PI)
 		angle -= 2*M_PI;
 
 	return angle;

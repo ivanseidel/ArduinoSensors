@@ -17,6 +17,7 @@
 
 #include <ArduinoSensors.h>
 #include <sensors/AnalogVoltage.h>
+#include <AnalogIn.h>
 #include <interfaces/DistanceInterface.h>
 
 #include <math.h>
@@ -54,7 +55,7 @@ protected:
 	float tmpDistance;
 	
 	// Object that reads from Analog pin
-	AnalogVoltage analogPin;
+	AnalogIn analogPin;
 
 	// Factor to scale distance
 	float scaleFactor;
@@ -62,12 +63,12 @@ protected:
 	float convert(float voltage){
 		Serial.println(voltage);
 		// Calculate real Centimiter value
-		return tmpDistance = (voltage / 512) * (scaleFactor * analogPin.maxVoltage);
+		return tmpDistance = voltage * 10;//(voltage / 512) * (scaleFactor * analogPin.maxVoltage);
 	}
 
 public:
 	EZUltrasonicAnalog(int _pin, float _scaleFactor = LV_EZ0){
-		analogPin = AnalogVoltage(_pin);
+		analogPin = AnalogIn(_pin);
 
 		distance = 0;
 
@@ -93,7 +94,8 @@ public:
 	*/
 	virtual float readDistance(){
 		// Read ADC and converts
-		distance = convert(analogPin.readVoltage());
+		// distance = convert(analogPin.readVoltage());
+		distance = analogPin.read();
 
 		return getDistance();
 	}

@@ -287,7 +287,7 @@ public:
 
 		setOperationModeRaw(mode);
 
-		delayMicroseconds(800);
+		delayMicroseconds(1000);
 		inContinuousMode = (getOperationMode() == HMC6352_MODE_CONTINUOUS_MODE);
 	}
 

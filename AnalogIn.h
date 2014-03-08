@@ -12,7 +12,7 @@
 
 #include "Arduino.h"
 
-#include "Thread.h"
+#include <Thread.h>
 
 class AnalogIn: public Thread
 {
@@ -37,6 +37,7 @@ public:
 		setup(_inPin);
 
 		Thread::Thread();
+		setInterval(20);
 	}
 
 	virtual void setup(int _inPin){
@@ -78,7 +79,7 @@ public:
 		Saves localy and then returns it.
 	*/
 	virtual long read(){
-		value = (analogRead(inPin) + analogRead(inPin) + analogRead(inPin))/3;
+		value = (analogRead(inPin) + analogRead(inPin))/2;
 		return getValue();
 	}
 

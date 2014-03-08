@@ -30,7 +30,7 @@ protected:
 		This method is responsable for converting the
 		corresponding ADC value into CM value and returning
 	*/
-	virtual float convertDistance(float value);
+	virtual float convertDistance(float value){return value;}
 
 public:
 	/*

@@ -23,7 +23,7 @@
 // Voltage that indicates no voltage assignment
 #define NO_VOLTAGE	-9999
 
-class AnalogVoltage: protected AnalogIn, public VoltageInterface
+class AnalogVoltage: public AnalogIn, public VoltageInterface
 {
 protected:
 	// Cached value of the Voltage
