@@ -70,7 +70,7 @@ public:
 			digitalOutObject = LOW; (Turns off)
 	*/
 	virtual void operator=(bool on){
-		turn(HIGH);
+		turn(on);
 	}
 
 	/*
