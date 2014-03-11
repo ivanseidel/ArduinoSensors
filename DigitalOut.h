@@ -55,11 +55,10 @@ public:
 	}
 
 	/*
-		Compares if the output signal of this pin,
-		is equal to other boolean value
+		Return the output signal of this pin
 	*/
-	virtual bool operator==(bool other){
-		return (digitalRead(outPin) ^ invert) == other;
+	virtual operator bool(){
+		return (digitalRead(outPin) ^ invert);
 	}
 
 	/*
