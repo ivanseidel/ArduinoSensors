@@ -138,7 +138,6 @@ We usually need to use Analog Pins as Digital. Or even Read it's value multiple 
 AnalogIn myPot(A0);
 
 // Reads it's value
-int val = myPot;
 val = myPot.read();
 
 // Get it's cached value (does not reads ADC, only returns last value)
