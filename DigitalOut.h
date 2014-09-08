@@ -46,7 +46,7 @@ public:
 		Invert: Should invert the output signal?
 	*/
 	DigitalOut(int _outPin, bool _invert = false){
-		pinMode(outPin, OUTPUT);
+		pinMode(_outPin, OUTPUT);
 
 		outPin = _outPin;
 		invert = _invert;
