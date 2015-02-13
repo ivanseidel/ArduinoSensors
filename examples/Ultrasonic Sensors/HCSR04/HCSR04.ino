@@ -9,7 +9,7 @@
 int echoPin 	= 12;
 int triggerPin 	= 13;
 
-PingUltrasonic myUltrasonic(echoPin, triggerPin);
+PingUltrasonic myUltrasonic(triggerPin, echoPin);
 
 void setup() {
 	Serial.begin(9600);
