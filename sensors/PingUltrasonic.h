@@ -66,7 +66,7 @@ private:
 	}
 
 public:
-	PingUltrasonic(int _trigPin, int _echoPin = -1){
+	PingUltrasonic(int _trigPin, int _echoPin = -1): Thread() {
 		trigPin = _trigPin;
 
 		/*
@@ -83,7 +83,6 @@ public:
 		minDistance = 3;
 		maxDistance = 500;
 
-		Thread::Thread();
 		setInterval(50);
 	}
 
